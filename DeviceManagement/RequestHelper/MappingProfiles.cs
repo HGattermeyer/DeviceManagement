@@ -8,10 +8,16 @@ namespace DeviceManagement.RequestHelper
     {
         public MappingProfiles()
         {
-            CreateMap<Device, DeviceDTO>().IncludeMembers(x => x.Brand);
-            CreateMap<Brand, DeviceDTO>();
-            CreateMap<CreateDeviceDTO, Device>().ForMember(x => x.Brand, o => o.MapFrom(s => 2));
-            CreateMap<CreateDeviceDTO, Brand>();
+            CreateMap<Device, DeviceDto>().IncludeMembers(x => x.Brand);
+            CreateMap<Brand, DeviceDto>();
+            CreateMap<Device, CreateDeviceDto>()
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+                .ForMember(dest => dest.BrandName, opt => opt.MapFrom(src => src.Brand.Name));
+
+            CreateMap<CreateDeviceDto, Device>()
+                        .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+                        .ForPath(dest => dest.Brand.Name, opt => opt.MapFrom(src => src.BrandName))
+                        .ForMember(dest => dest.BrandId, opt => opt.Ignore());
         }
     }
 }

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DeviceManagement.DTOs
 {
-    public class CreateDeviceDTO
+    public class CreateDeviceDto
     {
         [Required]
         public string Name { get; set; }

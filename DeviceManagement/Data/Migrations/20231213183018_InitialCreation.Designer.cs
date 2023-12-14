@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DeviceManagement.Data.Migrations
 {
     [DbContext(typeof(DeviceDbContext))]
-    [Migration("20231213162308_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20231213183018_InitialCreation")]
+    partial class InitialCreation
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -66,12 +66,17 @@ namespace DeviceManagement.Data.Migrations
             modelBuilder.Entity("DeviceManagement.Entities.Device", b =>
                 {
                     b.HasOne("DeviceManagement.Entities.Brand", "Brand")
-                        .WithMany()
+                        .WithMany("Devices")
                         .HasForeignKey("BrandId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Brand");
+                });
+
+            modelBuilder.Entity("DeviceManagement.Entities.Brand", b =>
+                {
+                    b.Navigation("Devices");
                 });
 #pragma warning restore 612, 618
         }

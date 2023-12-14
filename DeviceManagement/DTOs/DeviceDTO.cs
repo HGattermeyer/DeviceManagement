@@ -2,7 +2,7 @@
 
 namespace DeviceManagement.DTOs
 {
-    public class DeviceDTO
+    public class DeviceDto
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

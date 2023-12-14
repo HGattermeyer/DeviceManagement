@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DeviceManagement.Entities
 {
@@ -6,6 +7,9 @@ namespace DeviceManagement.Entities
     public class Brand
     {
         public Guid Id { get; set; }
+
         public string Name { get; set; }
+
+        public ICollection<Device> Devices { get; set; }
     }
 }

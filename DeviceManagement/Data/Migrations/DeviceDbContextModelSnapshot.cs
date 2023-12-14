@@ -63,12 +63,17 @@ namespace DeviceManagement.Data.Migrations
             modelBuilder.Entity("DeviceManagement.Entities.Device", b =>
                 {
                     b.HasOne("DeviceManagement.Entities.Brand", "Brand")
-                        .WithMany()
+                        .WithMany("Devices")
                         .HasForeignKey("BrandId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Brand");
+                });
+
+            modelBuilder.Entity("DeviceManagement.Entities.Brand", b =>
+                {
+                    b.Navigation("Devices");
                 });
 #pragma warning restore 612, 618
         }

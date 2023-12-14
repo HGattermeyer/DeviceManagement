@@ -13,13 +13,15 @@ namespace DeviceManagement.Data
             SeedData(scope.ServiceProvider.GetService<DeviceDbContext>());
         }
 
+
+
         private static void SeedData(DeviceDbContext context)
         {
             context.Database.Migrate();
 
             if (context.Devices.Any())
             {
-                Console.WriteLine("Already have data - no need to seed.");
+                Console.WriteLine("Already have data - no need to seed again.");
                 return;
             }
 
