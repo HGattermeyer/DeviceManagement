@@ -3,6 +3,8 @@ using AutoMapper.QueryableExtensions;
 using DeviceManagement.Data;
 using DeviceManagement.DTOs;
 using DeviceManagement.Entities;
+using DeviceManagement.Exceptions;
+using DeviceManagement.Services;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,128 +15,109 @@ namespace DeviceManagement.Controllers
     [Route("api/devices")]
     public class DevicesController : ControllerBase
     {
-        private readonly DeviceDbContext _context;
+        private readonly IDeviceService _DeviceService;
         private readonly IMapper _mapper;
 
-        public DevicesController(DeviceDbContext context, IMapper mapper)
+        public DevicesController(IDeviceService deviceService, IMapper mapper)
         {
-            _context = context;
+            _DeviceService = deviceService;
             _mapper = mapper;
         }
 
         [HttpGet]
         public async Task<ActionResult<List<DeviceDto>>> GetAllDevices()
         {
-            var query = _context.Devices.OrderBy(x => x.CreatedDate);
+            try
+            {
+                var allDevices = await _DeviceService.GetAllDevicesAsync();
 
-            return await query.ProjectTo<DeviceDto>(_mapper.ConfigurationProvider).ToListAsync();
+                return _mapper.Map<List<DeviceDto>>(allDevices);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<DeviceDto>> GetAllDevices(Guid? id)
+        public async Task<ActionResult<DeviceDto>> GetDeviceById(Guid id)
         {
-            var device = _context.Devices
-                .Include(x => x.Brand)
-                .FirstOrDefault(d => d.Id == id);
-
-            if (device == null)
+            try
             {
-                return NotFound();
+                var device = await _DeviceService.GetDeviceByIdAsync(id);
+                return _mapper.Map<DeviceDto>(device);
             }
-
-            return _mapper.Map<DeviceDto>(device);
+            catch (DeviceNotFoundException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost]
         public async Task<ActionResult<DeviceDto>> CreateDevice(CreateDeviceDto deviceDto)
         {
-            var device = _mapper.Map<Device>(deviceDto);
-
-            var isDeviceExists = _context.Devices.FirstOrDefault(d => d.Name == device.Name);
-
-            if(isDeviceExists != null) 
+            try
             {
-                return BadRequest("Device already exists");
+                var newDevice = await _DeviceService.CreateDevice(deviceDto);
+                Console.WriteLine("4");
+
+                return _mapper.Map<DeviceDto>(newDevice);
+
             }
-
-            Console.WriteLine($"Device brand name: {device.Brand.Name}");
-            var brand = _context.Brands.FirstOrDefault(d => d.Name == device.Brand.Name);
-
-            if (brand != null)
+            catch (DeviceAlreadyExistsException ex) 
             {
-                device.Brand = brand;
+                return BadRequest(ex.Message);
             }
-
-            _context.Add(device);
-
-            var newDevice = _mapper.Map<DeviceDto>(device);
-
-            var result = await _context.SaveChangesAsync() > 0;
-
-            if(!result)
-            {
-                return BadRequest("Could not save changes to DB.");
-            }
-
-            return CreatedAtAction(nameof(CreateDevice), newDevice);
         }
 
         [HttpDelete("{id}")]
         //TODO put id in route
         public async Task<ActionResult<DeviceDto>> Delete(Guid id)
         {
-            var device = await _context.Devices.FirstOrDefaultAsync(d => d.Id == id);
-            if(device != null)
+            try
             {
-                _context.Devices.Remove(device); 
-                await _context.SaveChangesAsync();
+                var isDeleted = await _DeviceService.Delete(id);
+                if (isDeleted)
+                {
+                    return Ok();
+                }
 
-                return Ok();
+                return BadRequest("Error deleting");
+
             }
-
-            return BadRequest("Device not found");
+            catch (DeviceNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
         [HttpPut("{deviceId}")]
         public async Task<ActionResult<DeviceDto>> UpdateDevice(Guid deviceId, UpdateDeviceDto updateDeviceDto)
         {
-            var device = _context.Devices.
-                Include(x => x.Brand).
-                FirstOrDefault(d => d.Id == deviceId);
-
-            if (device == null)
+            try
             {
-                return BadRequest("Device not found");
-            }
 
-            if(!string.IsNullOrEmpty(updateDeviceDto.BrandName))
+                var device = await _DeviceService.UpdateDevice(deviceId, updateDeviceDto);
+                return _mapper.Map<DeviceDto>(device);
+            }
+            catch (DeviceNotFoundException ex)
             {
-                var brand = await _context.Brands
-                    .FirstOrDefaultAsync(x => x.Name == updateDeviceDto.BrandName);
-
-                if(brand != null)
-                {
-                    device.Brand = brand;
-                }
-                else
-                {
-                    device.Brand = new Brand()
-                    {
-                        Name = updateDeviceDto.BrandName,
-                    };
-                }
+                return BadRequest(ex.Message);
             }
+        }
 
-            device.Name = updateDeviceDto.Name ?? device.Name;
-
-            var result = await _context.SaveChangesAsync() > 0;
-
-            if (!result)
+        [HttpGet("brand/{brandName}")]
+        public async Task<ActionResult<List<DeviceDto>>> GetDevicesByBrandName(string brandName)
+        {
+            try
             {
-                return BadRequest("Problim saving changes.");
+                var devicesByBrand = await _DeviceService.GetDevicesByBrandName(brandName);
+                return _mapper.Map<List<DeviceDto>>(devicesByBrand);
             }
-
-            return Ok(device);
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
     }
