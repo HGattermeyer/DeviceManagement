@@ -1,0 +1,254 @@
+{
+	"info": {
+		"_postman_id": "ed272f8b-4c62-4ca7-8449-8756628a62b7",
+		"name": "DeviceManager",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18651573",
+		"_collection_link": "https://restless-astronaut-512300.postman.co/workspace/DeviceManagement~4398ce23-e35b-4a7b-97c4-02c0dc96fccb/collection/18651573-ed272f8b-4c62-4ca7-8449-8756628a62b7?action=share&source=collection_link&creator=18651573"
+	},
+	"item": [
+		{
+			"name": "Tests",
+			"item": [
+				{
+					"name": "Get - Return Not Found",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-endpoint}}/api/devices/02120e53-11bd-4280-a1a4-67cd0c75bdf3",
+							"host": [
+								"{{api-endpoint}}"
+							],
+							"path": [
+								"api",
+								"devices",
+								"02120e53-11bd-4280-a1a4-67cd0c75bdf3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add - Return OK",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Name\": \"iPhone 14 Pro\",\r\n    \"BrandName\": \"Apple\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-endpoint}}/api/devices",
+							"host": [
+								"{{api-endpoint}}"
+							],
+							"path": [
+								"api",
+								"devices"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add - Return BadRequest No Brand Name",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Name\": \"Galaxy S4\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-endpoint}}/api/devices",
+							"host": [
+								"{{api-endpoint}}"
+							],
+							"path": [
+								"api",
+								"devices"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add - Return BadRequest No Name",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"BrandName\": \"Samsung\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-endpoint}}/api/devices/",
+							"host": [
+								"{{api-endpoint}}"
+							],
+							"path": [
+								"api",
+								"devices",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All - Return Ok",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-endpoint}}/api/devices/",
+							"host": [
+								"{{api-endpoint}}"
+							],
+							"path": [
+								"api",
+								"devices",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get by Brand - Return Ok",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api-endpoint}}/api/devices/brand/apple",
+							"host": [
+								"{{api-endpoint}}"
+							],
+							"path": [
+								"api",
+								"devices",
+								"brand",
+								"apple"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Complete - Return OK",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"BrandName\": \"Apple\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api-endpoint}}/api/devices/c95761d6-f18f-42f7-8ca4-8e17c7cd9965",
+							"host": [
+								"{{api-endpoint}}"
+							],
+							"path": [
+								"api",
+								"devices",
+								"c95761d6-f18f-42f7-8ca4-8e17c7cd9965"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Return OK",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api-endpoint}}/api/devices/02120e53-11bd-4280-a1a4-67cd0c75bdf3",
+							"host": [
+								"{{api-endpoint}}"
+							],
+							"path": [
+								"api",
+								"devices",
+								"02120e53-11bd-4280-a1a4-67cd0c75bdf3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Return Not Found",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api-endpoint}}/api/devices/1933183c-983f-423f-989c-d589de2da450",
+							"host": [
+								"{{api-endpoint}}"
+							],
+							"path": [
+								"api",
+								"devices",
+								"1933183c-983f-423f-989c-d589de2da450"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "api-endpoint",
+			"value": "http://localhost:7001",
+			"type": "string"
+		},
+		{
+			"value": "",
+			"type": "string",
+			"disabled": true
+		}
+	]
+}
